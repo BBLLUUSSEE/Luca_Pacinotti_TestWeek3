@@ -333,8 +333,11 @@ SELECT dbo.CalcoloIngredientiDiUnaPizza('Dioniso') AS [Numero Ingredienti] --Val
 --Opzionale: la vista deve restituire una tabella con prima colonna
 --contenente il nome della pizza, seconda colonna il prezzo e terza
 --colonna la lista unica di tutti gli ingredienti separati da virgola
-CREATE VIEW Menu AS
-SELECT DISTINCT Pizza.Nome, Pizza.Prezzo
-FROM Pizza
+CREATE VIEW MenuProva 
+AS(select P.Nome, P.Prezzo, string_agg(I.Nome, ', ') AS [Ingredienti]
+FROM Pizza P
+		join Pizza_Ingrediente PIN on P.IdPizza = PIN.IdPizza
+		join Ingrediente I on I.IdIngrediente = PIN.IdIngrediente
+GROUP BY P.Nome, P.Prezzo)
 
-SELECT * FROM Menu;
+SELECT * FROM MenuProva;
