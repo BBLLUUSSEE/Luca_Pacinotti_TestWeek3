@@ -131,11 +131,11 @@ INSERT INTO Pizza_Ingrediente VALUES(12, 1110);
 SELECT Nome, Prezzo FROM Pizza WHERE Prezzo > 6;
 
 
---2. Estrarre la pizza/le pizze più costosa/e.
+--2. Estrarre la pizza/le pizze piÃ¹ costosa/e.
 SELECT Nome, Prezzo FROM Pizza WHERE Prezzo = (SELECT MAX(Prezzo) FROM Pizza);
 
 
---3. Estrarre le pizze «bianche»
+--3. Estrarre le pizze Â«biancheÂ»
 SELECT Pizza.Nome FROM Pizza WHERE Pizza.Nome not in (SELECT Pizza.Nome FROM pizza 
 						join Pizza_Ingrediente ON Pizza.idPizza = Pizza_Ingrediente.idPizza
    						join Ingrediente ON Ingrediente.idIngrediente = Pizza_Ingrediente.idIngrediente
@@ -227,7 +227,7 @@ AS
 
 	DELETE FROM Pizza_Ingrediente WHERE idPizza = @ID_PIZZA AND idIngrediente = @ID_INGREDIENTE
 GO
-EXECUTE EliminaIngredientePizza @NomePizza = 'Sarda', @NomeIngrediente = 'Pomodoro';
+EXECUTE Incremento10Ingrediente @NomePizza = 'Sarda', @NomeIngrediente = 'Pomodoro';
 
 
 
@@ -329,7 +329,7 @@ SELECT dbo.CalcoloIngredientiDiUnaPizza('Dioniso') AS [Numero Ingredienti] --Val
 
 
 
---Realizzare una view che rappresenta il menù con tutte le pizze.
+--Realizzare una view che rappresenta il menÃ¹ con tutte le pizze.
 --Opzionale: la vista deve restituire una tabella con prima colonna
 --contenente il nome della pizza, seconda colonna il prezzo e terza
 --colonna la lista unica di tutti gli ingredienti separati da virgola
