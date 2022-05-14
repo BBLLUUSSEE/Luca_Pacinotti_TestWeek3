@@ -143,9 +143,9 @@ WHERE Ingrediente.Nome = 'pomodoro');
 
 
 --4. Estrarre le pizze che contengono funghi (di qualsiasi tipo).
-SELECT Pizza.Nome FROM Pizza join Pizza_Ingrediente on Pizza.idPizza = Pizza_Ingrediente.idPizza
+SELECT Pizza.Nome, Pizza.Prezzo FROM Pizza join Pizza_Ingrediente on Pizza.idPizza = Pizza_Ingrediente.idPizza
 							 join Ingrediente on Ingrediente.idIngrediente = Pizza_Ingrediente.idIngrediente
-WHERE Ingrediente.Nome LIKE '%funghi%';
+WHERE Ingrediente.Nome LIKE '%grana%';
 
 
 
@@ -219,15 +219,21 @@ EXECUTE EliminaIngredientePizza @NomePizza = 'Sarda', @NomeIngrediente = 'Pomodo
 --5. Incremento del 10% del prezzo delle pizze contenenti un ingrediente (parametro: nome ingrediente)
 CREATE PROCEDURE Incremento10Ingrediente 
 	@NomeIngrediente varchar(30)
-AS
-	DECLARE @ID_INGREDIENTE INT
-	SELECT @ID_INGREDIENTE = Ingrediente.idIngrediente
+AS 
+	DECLARE @idINGREDIENTE INT
+	SELECT @idINGREDIENTE = Ingrediente.idIngrediente
 	FROM Ingrediente
 	WHERE Ingrediente.Nome = @NomeIngrediente
 
-	DELETE FROM Pizza_Ingrediente WHERE idPizza = @ID_PIZZA AND idIngrediente = @ID_INGREDIENTE
+	UPDATE PIZZA 
+	SET Prezzo = Prezzo + (Prezzo*10)/100 
+	WHERE IdPizza in (
+	SELECT Pizza.idPizza
+	FROM Pizza join Pizza_Ingrediente on Pizza.idPizza =Pizza_Ingrediente.idPizza
+	WHERE Pizza_Ingrediente.idIngrediente = @idINGREDIENTE)
 GO
-EXECUTE Incremento10Ingrediente @NomePizza = 'Sarda', @NomeIngrediente = 'Pomodoro';
+EXECUTE Incremento10Ingrediente @NomeIngrediente = 'grana';
+
 
 
 
@@ -330,9 +336,6 @@ SELECT dbo.CalcoloIngredientiDiUnaPizza('Dioniso') AS [Numero Ingredienti] --Val
 
 
 --Realizzare una view che rappresenta il menù con tutte le pizze.
---Opzionale: la vista deve restituire una tabella con prima colonna
---contenente il nome della pizza, seconda colonna il prezzo e terza
---colonna la lista unica di tutti gli ingredienti separati da virgola
 CREATE VIEW MenuProva 
 AS(select P.Nome, P.Prezzo, string_agg(I.Nome, ', ') AS [Ingredienti]
 FROM Pizza P
